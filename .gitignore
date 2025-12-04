@@ -1,0 +1,17 @@
+__pycache__/
+*.pyc
+
+# Slurm logs
+slurm-*.out
+
+# Large data
+data/
+*.csv
+*.zip
+*.parquet
+
+# WandB
+wandb/
+
+# Environments
+.env
