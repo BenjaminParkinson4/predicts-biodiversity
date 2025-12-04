@@ -3,6 +3,9 @@ __pycache__/
 
 # Slurm logs
 slurm-*.out
+slurm/*.err
+
+.ipynb_checkpoints/
 
 # Large data
 data/
@@ -13,5 +16,6 @@ data/
 # WandB
 wandb/
 
+.DS_Store
 # Environments
 .env
