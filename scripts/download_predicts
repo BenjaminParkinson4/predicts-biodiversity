@@ -1,0 +1,35 @@
+#scripts/download_predicts.R
+library(predictsr)
+library(dplyr)
+
+cat("Starting official PREDICTS pipeline\n")
+
+#load complete database
+pred <- PREDICTS.load()
+
+#apply cleaning
+pred_clean <- pred %>%
+  dropStudies() %>%
+  cleanTaxonomy() %>%
+  calculateAbundances() %>%
+  calculateMetrics()
+
+#create output folders
+dir.create("data/raw/predicts", recursive = TRUE, showWarnings = FALSE)
+dir.create("data/processed", showWarnings = FALSE)
+
+#export raw tables
+write.csv(pred$sites,
+          "data/raw/predicts/sites.csv",
+          row.names = FALSE)
+
+write.csv(pred$studies,
+          "data/raw/predicts/studies.csv",
+          row.names = FALSE)
+
+#export cleaned metrics
+write.csv(pred_clean$divMetrics,
+          "data/processed/predicts_diversity_metrics.csv",
+          row.names = FALSE)
+
+cat("PREDICTS dataset exported successfully\n")

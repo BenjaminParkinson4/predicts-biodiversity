@@ -12,6 +12,7 @@ data/
 *.csv
 *.zip
 *.parquet
+!data/.gitkeep
 
 # WandB
 wandb/
