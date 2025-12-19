@@ -1,19 +1,16 @@
-# NOTE:
-#this script uses the `predictsr` package to generate
-#a flattened site-level baseline dataset for quick ML prototyping.
-
+#using "predictsr" package
 library(predictsr)
 library(dplyr)
 
 cat("Starting R script for loading PREDICTS dataset\n")
 
-# get repo root based on the script location
+#get repo root based on the script location
 args <- commandArgs(trailingOnly = FALSE)
 file_arg <- "--file="
 script_path <- sub(file_arg, "", args[grep(file_arg, args)])
 repo_root <- normalizePath(file.path(dirname(script_path), ".."))
 
-# project data paths (your structure)
+#project data paths
 raw_dir <- file.path(repo_root, "src", "data", "raw", "predicts")
 processed_dir <- file.path(repo_root, "src", "data", "processed")
 
@@ -43,12 +40,11 @@ site_baseline <- data_cleaned %>%
 write.csv(site_baseline, file.path(processed_dir, "predicts_cleaned.csv"), row.names = FALSE)
 cat("Saved baseline site-level file: predicts_cleaned.csv\n")
 
-#extended site-level dataset (includes additional predictors)
+#extended site-level dataset
 site_extended <- data_cleaned %>%
   group_by(SS) %>%
   summarise(
     Species_richness = n_distinct(Species),
-
     LandUse = first(Predominant_land_use),
     Use_intensity = first(Use_intensity),
     Latitude = first(Latitude),

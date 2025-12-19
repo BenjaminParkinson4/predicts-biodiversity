@@ -1,15 +1,13 @@
 import numpy as np
 import pandas as pd
-
+import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 from sklearn.preprocessing import StandardScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.inspection import permutation_importance
-
 from src.datasets.load_predicts_tabular import load_predicts_extended
 
 
@@ -52,7 +50,7 @@ def main():
 
     pipe.fit(X_train, y_train)
 
-    # permutation importance on raw feature columns (before one-hot expansion)
+    #permutation importance on raw feature columns before one-hot expansion
     r = permutation_importance(
         pipe, X_test, y_test,
         n_repeats=10,
@@ -66,13 +64,32 @@ def main():
         "importance_std": r.importances_std,
     }).sort_values("importance_mean", ascending=False)
 
+    imp = imp[imp["importance_mean"] > 0]
+
+    #plot top N
+    top_n = 20
+    top = imp.head(top_n).iloc[::-1]  #reverse for horizontal bar plot
+
+    plt.figure(figsize=(10, 7))
+    plt.barh(top["feature"], top["importance_mean"], xerr=top["importance_std"])
+    plt.xlabel("Permutation importance (mean decrease in score)")
+    plt.ylabel("Feature")
+    plt.title(f"Top {top_n} Features – Permutation Importance (PREDICTS Extended)")
+    plt.tight_layout()
+
+    plot_out = "feature_importance_predicts_extended_top20.png"
+    plt.savefig(plot_out, dpi=300)
+    plt.close()
+
+    print(f"Saved plot: {plot_out}")
+
+
     print("\nTop 20 features (permutation importance):")
     print(imp.head(20).to_string(index=False))
 
     out = "feature_importance_predicts_extended.csv"
     imp.to_csv(out, index=False)
     print(f"\nSaved: {out}")
-
 
 if __name__ == "__main__":
     main()
